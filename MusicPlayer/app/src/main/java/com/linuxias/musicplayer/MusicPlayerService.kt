@@ -68,7 +68,7 @@ class MusicPlayerService : Service() {
 
     fun play() {
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.AfterYou)
+            mediaPlayer = MediaPlayer.create(this, R.raw.afteryou)
             mediaPlayer?.setVolume(1.0f, 1.0f)
             mediaPlayer?.isLooping = true
             mediaPlayer?.start()

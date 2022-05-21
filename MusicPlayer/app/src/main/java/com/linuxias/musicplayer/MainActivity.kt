@@ -10,48 +10,50 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import android.widget.Button
+import com.linuxias.musicplayer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    lateinit var btn_play: Button
-    lateinit var btn_pause: Button
-    lateinit var btn_stop: Button
+    private lateinit var binding: ActivityMainBinding
 
-    var service: MusicPlayerService? = null
+    var musicService: MusicPlayerService? = null
     val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            service = (service as MusicPlayerService.MusicPlayerBinder).getService()
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            musicService = (service as MusicPlayerService.MusicPlayerBinder).getService()
         }
 
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            service = null
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(getLayoutInflater())
+        setContentView(binding.root)
 
-        btn_play = findViewById(R.id.btn_play)
-        btn_pause = findViewById(R.id.btn_pause)
-        btn_stop = findViewById(R.id.btn_stop)
-
-        btn_play.setOnClickListener(this)
-        btn_pause.setOnClickListener(this)
-        btn_stop.setOnClickListener(this)
+        binding.btnPlay.setOnClickListener(this)
+        binding.btnPause.setOnClickListener(this)
+        binding.btnStop.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
         when(view?.id) {
-            R.id.btn_play -> play()
-            R.id.btn_pause -> pause()
-            R.id.btn_stop -> stop()
+            R.id.btn_play -> {
+                play()
+            }
+            R.id.btn_pause -> {
+                pause()
+            }
+            R.id.btn_stop -> {
+                stop()
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
 
-        if (service == null) {
+        if (musicService == null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(Intent(this, MusicPlayerService::class.java))
             } else {
@@ -66,24 +68,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onPause() {
         super.onPause()
 
-        if (service != null) {
-            if (service!!.isPlaying()) {
-                service!!.stopSelf()
+        if (musicService != null) {
+            if (musicService!!.isPlaying()) {
+                musicService!!.stopSelf()
             }
             unbindService(serviceConnection)
-            service = null
+            musicService = null
         }
     }
 
     private fun stop() {
-        service?.stop()
+        musicService?.stop()
     }
 
     private fun pause() {
-        service?.pause()
+        musicService?.pause()
     }
 
     private fun play() {
-        service?.play()
+        musicService?.play()
     }
 }
