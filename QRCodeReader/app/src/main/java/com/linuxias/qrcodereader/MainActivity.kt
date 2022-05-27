@@ -2,6 +2,7 @@ package com.linuxias.qrcodereader
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -33,12 +34,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var isDetected = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         permissionLauncher.launch(REQUIRED_PERMISSIONS)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isDetected = false
     }
 
     fun startCamera() {
@@ -68,8 +76,12 @@ class MainActivity : AppCompatActivity() {
         imageAnalysis.setAnalyzer(cameraExecutor,
             QRCodeAnalyzer(object : OnDetectListener {
                 override fun onDetect(message: String) {
-                    Toast.makeText(this@MainActivity, "${message}",
-                    Toast.LENGTH_SHORT).show()
+                    if (isDetected == false) {
+                        isDetected = true
+                        val intent = Intent(this@MainActivity, ResultActivity::class.java)
+                        intent.putExtra("message", message)
+                        startActivity(intent)
+                    }
                 }
             }))
         return imageAnalysis
