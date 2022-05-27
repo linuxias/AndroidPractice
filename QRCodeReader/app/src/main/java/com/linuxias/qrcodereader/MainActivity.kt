@@ -6,13 +6,17 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.google.common.util.concurrent.ListenableFuture
 import com.linuxias.qrcodereader.databinding.ActivityMainBinding
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -42,9 +46,11 @@ class MainActivity : AppCompatActivity() {
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider = cameraProviderFuture.get()
             val preview = getPreview()
+            val imageAnalysis = getimageAnalysis()
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-            cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+            cameraProvider.bindToLifecycle(this,
+                cameraSelector, preview, imageAnalysis)
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -53,6 +59,20 @@ class MainActivity : AppCompatActivity() {
         preview.setSurfaceProvider(binding.barcordPreview.getSurfaceProvider())
 
         return preview
+    }
+
+    fun getimageAnalysis() : ImageAnalysis {
+        val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+        val imageAnalysis = ImageAnalysis.Builder().build()
+
+        imageAnalysis.setAnalyzer(cameraExecutor,
+            QRCodeAnalyzer(object : OnDetectListener {
+                override fun onDetect(message: String) {
+                    Toast.makeText(this@MainActivity, "${message}",
+                    Toast.LENGTH_SHORT).show()
+                }
+            }))
+        return imageAnalysis
     }
 
     private companion object {
