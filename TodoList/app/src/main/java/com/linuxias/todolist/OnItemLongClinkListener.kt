@@ -1,4 +1,5 @@
 package com.linuxias.todolist
 
-class OnItemLongClinkListener {
+interface OnItemLongClinkListener {
+    fun onLongClick(position : Int)
 }

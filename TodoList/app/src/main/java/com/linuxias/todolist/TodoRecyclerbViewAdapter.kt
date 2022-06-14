@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.linuxias.todolist.databinding.ItemTodoBinding
 import com.linuxias.todolist.db.TodoEntity
 
-class TodoRecyclerbViewAdapter(private val todoList: ArrayList<TodoEntity>)
+class TodoRecyclerbViewAdapter(private val todoList: ArrayList<TodoEntity>,
+                               private val listener : OnItemLongClinkListener)
     :RecyclerView.Adapter<TodoRecyclerbViewAdapter.TodoViewHolder>() {
 
     inner class TodoViewHolder(binding : ItemTodoBinding) :
@@ -40,6 +41,11 @@ class TodoRecyclerbViewAdapter(private val todoList: ArrayList<TodoEntity>)
 
         holder.tv_importance.text = todoData.importance.toString()
         holder.tv_title.text = todoData.title
+
+        holder.root.setOnLongClickListener {
+            listener.onLongClick(position)
+            false
+        }
     }
 
     override fun getItemCount(): Int {
