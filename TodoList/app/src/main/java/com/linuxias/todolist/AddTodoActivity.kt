@@ -31,7 +31,6 @@ class AddTodoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
     }
 
     private fun insertTodo() {
