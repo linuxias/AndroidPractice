@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), OnItemLongClinkListener {
 
     private fun getAllTodoList() {
         Thread {
-            todoList = ArrayList(todoDao.getAll())
+            todoList = todoDao.getAll()
             setRecycleView()
         }.start()
     }
