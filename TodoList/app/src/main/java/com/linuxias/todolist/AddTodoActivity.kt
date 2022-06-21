@@ -3,6 +3,7 @@ package com.linuxias.todolist
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.linuxias.todolist.databinding.ActivityAddTodoBinding
 import com.linuxias.todolist.db.TodoDao
 import com.linuxias.todolist.db.TodoDatabase
@@ -13,16 +14,14 @@ import kotlin.coroutines.coroutineContext
 
 class AddTodoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTodoBinding
-    private lateinit var db : TodoDatabase
-    private lateinit var todoDao: TodoDao
+    private val todoViewModel: TodoViewModel by viewModels {
+        TodoViewModelFactory((application as TodoApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddTodoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        db = TodoDatabase.getTodoDatabase(this)!!
-        todoDao = db.getTodoDao()
 
         binding.btnComplete.setOnClickListener {
             insertTodo()
@@ -55,7 +54,7 @@ class AddTodoActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG).show()
         } else {
             Thread {
-                todoDao.insertTodo(TodoEntity(null, todoTitle, todoImportance))
+                todoViewModel.insert(TodoEntity(null, todoTitle, todoImportance))
                 runOnUiThread {
                     Toast.makeText(this, "Compelete to add todo",
                     Toast.LENGTH_SHORT).show()

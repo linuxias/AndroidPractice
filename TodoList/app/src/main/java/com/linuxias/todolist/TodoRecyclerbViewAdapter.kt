@@ -2,20 +2,33 @@ package com.linuxias.todolist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.linuxias.todolist.databinding.ItemTodoBinding
 import com.linuxias.todolist.db.TodoEntity
 
-class TodoRecyclerbViewAdapter(private val todoList: ArrayList<TodoEntity>,
-                               private val listener : OnItemLongClinkListener)
-    :RecyclerView.Adapter<TodoRecyclerbViewAdapter.TodoViewHolder>() {
+class TodoRecyclerbViewAdapter(private val listener : OnItemLongClinkListener)
+    : ListAdapter<TodoEntity, TodoRecyclerbViewAdapter.TodoViewHolder>(TodoComparators()) {
 
-    inner class TodoViewHolder(binding : ItemTodoBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    class TodoViewHolder(binding : ItemTodoBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val tv_importance = binding.tvImportance
         val tv_title = binding.tvTitle
         val root = binding.root
     }
+
+    class TodoComparators : DiffUtil.ItemCallback<TodoEntity>() {
+        override fun areItemsTheSame(oldItem: TodoEntity, newItem: TodoEntity): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: TodoEntity, newItem: TodoEntity): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -26,7 +39,7 @@ class TodoRecyclerbViewAdapter(private val todoList: ArrayList<TodoEntity>,
     }
 
     override fun onBindViewHolder(holder: TodoRecyclerbViewAdapter.TodoViewHolder, position: Int) {
-        val todoData = todoList[position]
+        val todoData = getItem(position)
         when (todoData.importance) {
             1 -> {
                 holder.tv_importance.setBackgroundResource(R.color.red)
@@ -43,12 +56,9 @@ class TodoRecyclerbViewAdapter(private val todoList: ArrayList<TodoEntity>,
         holder.tv_title.text = todoData.title
 
         holder.root.setOnLongClickListener {
-            listener.onLongClick(position)
+            val todoData = getItem(position)
+            listener.onLongClick(todoData, position)
             false
         }
-    }
-
-    override fun getItemCount(): Int {
-        return todoList.size
     }
 }

@@ -4,21 +4,21 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.linuxias.todolist.databinding.ActivityMainBinding
-import com.linuxias.todolist.db.TodoDao
-import com.linuxias.todolist.db.TodoDatabase
 import com.linuxias.todolist.db.TodoEntity
 
 class MainActivity : AppCompatActivity(), OnItemLongClinkListener {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var db : TodoDatabase
-    private lateinit var todoDao : TodoDao
-    private lateinit var todoList : ArrayList<TodoEntity>
     private lateinit var adapter: TodoRecyclerbViewAdapter
+
+    private val todoViewModel: TodoViewModel by viewModels {
+        TodoViewModelFactory((application as TodoApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,25 +29,20 @@ class MainActivity : AppCompatActivity(), OnItemLongClinkListener {
             startActivity(Intent(this, AddTodoActivity::class.java))
         }
 
-        db = TodoDatabase.getTodoDatabase(this)!!
-        todoDao = db.getTodoDao()
-
         getAllTodoList()
     }
 
     private fun getAllTodoList() {
-        Thread {
-            todoList = todoDao.getAll()
-            setRecycleView()
-        }.start()
+        todoViewModel.allTodoList.observe(this) { it ->
+            it.let { adapter.submitList(it)}
+        }
+        setRecycleView()
     }
 
     private fun setRecycleView() {
-        runOnUiThread {
-            adapter = TodoRecyclerbViewAdapter(todoList, this)
-            binding.recyclerView.adapter = adapter
-            binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        }
+        adapter = TodoRecyclerbViewAdapter(this)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onRestart() {
@@ -55,7 +50,7 @@ class MainActivity : AppCompatActivity(), OnItemLongClinkListener {
         getAllTodoList()
     }
 
-    override fun onLongClick(position: Int) {
+    override fun onLongClick(todoData: TodoEntity, position: Int) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Delete todo item")
         builder.setMessage("Would you want to delete item?")
@@ -63,19 +58,18 @@ class MainActivity : AppCompatActivity(), OnItemLongClinkListener {
         builder.setPositiveButton("Yes",
             object : DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
-                    deleteTodo(position)
+                    deleteTodo(todoData, position)
                 }
             }
         )
         builder.show()
     }
 
-    private fun deleteTodo(position: Int) {
+    private fun deleteTodo(todoData: TodoEntity, position: Int) {
         Thread {
-            todoDao.deleteTodo(todoList[position])
-            todoList.removeAt(position)
+            todoViewModel.delete(todoData)
             runOnUiThread {
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRemoved(position)
                 Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
             }
         }.start()
