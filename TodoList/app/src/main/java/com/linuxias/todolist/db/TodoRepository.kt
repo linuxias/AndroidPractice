@@ -2,6 +2,7 @@ package com.linuxias.todolist.db
 
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 
 class TodoRepository(private val todoDao: TodoDao) {
     val allTodoList: Flow<List<TodoEntity>> = todoDao.getAll()

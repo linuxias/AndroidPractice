@@ -12,8 +12,8 @@ interface TodoDao {
     fun getAll() : Flow<List<TodoEntity>>
 
     @Insert
-    fun insertTodo(todo: TodoEntity)
+    suspend fun insertTodo(todo: TodoEntity)
 
     @Delete
-    fun deleteTodo(todo: TodoEntity)
+    suspend fun deleteTodo(todo: TodoEntity)
 }
