@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/btn_step1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step1"/>
+
+    <Button
+        android:id="@+id/btn_step2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step2"/>
+
+    <Button
+        android:id="@+id/btn_step3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step3"/>
+
+    <Button
+        android:id="@+id/btn_step4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step4"/>
+
+    <Button
+        android:id="@+id/btn_step5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step5"/>
+</androidx.appcompat.widget.LinearLayoutCompat>
