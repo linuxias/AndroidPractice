@@ -6,6 +6,8 @@ import android.os.Bundle
 import com.example.metachar.viewmodel_dataevent.databinding.ActivityMainBinding
 import com.example.metachar.viewmodel_dataevent.databinding.ActivityStep1Binding
 import com.example.metachar.viewmodel_dataevent.step1.Step1Activity
+import com.example.metachar.viewmodel_dataevent.step2.Step2Activity
+import com.example.metachar.viewmodel_dataevent.step3.Step3Activity
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +21,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnStep1.setOnClickListener {
             startActivity(Step1Activity::class.java)
+        }
+
+        binding.btnStep2.setOnClickListener {
+            startActivity(Step2Activity::class.java)
+        }
+
+        binding.btnStep3.setOnClickListener {
+            startActivity(Step3Activity::class.java)
         }
     }
 

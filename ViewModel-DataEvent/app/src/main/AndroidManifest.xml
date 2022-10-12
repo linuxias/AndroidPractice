@@ -13,6 +13,10 @@
         android:theme="@style/Theme.ViewModel_DataEvent"
         tools:targetApi="31">
         <activity
+            android:name=".step3.Step3Activity"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".step2.Step2Activity"
             android:exported="true">
             <meta-data
