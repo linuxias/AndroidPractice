@@ -12,25 +12,25 @@
         android:id="@+id/btn_step1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Step1"/>
+        android:text="LiveData"/>
 
     <Button
         android:id="@+id/btn_step2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Step2"/>
+        android:text="LiveData + Event"/>
 
     <Button
         android:id="@+id/btn_step3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Step3"/>
+        android:text="SharedFlow"/>
 
     <Button
         android:id="@+id/btn_step4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Step4"/>
+        android:text="StateFlow"/>
 
     <Button
         android:id="@+id/btn_step5"

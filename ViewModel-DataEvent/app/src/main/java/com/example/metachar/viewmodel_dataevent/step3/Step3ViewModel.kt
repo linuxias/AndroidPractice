@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class Step3ViewModel() : ViewModel() {
     private var _currentState = State.EXIT
-    private val _stateEvent = MutableSharedFlow<State>()
+    private val _stateEvent = MutableSharedFlow<State>(replay = 1)
     var stateEvent: SharedFlow<State> = _stateEvent.asSharedFlow()
 
     fun changeNextState() =  viewModelScope.launch {
